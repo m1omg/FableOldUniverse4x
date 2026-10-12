@@ -218,7 +218,10 @@
   function saveSlot() {
     const state = ui.state;
     if (!state) return;
-    const name = (prompt('Name this vigil:', state.seed) || '').trim();
+    // some hosts show no prompt dialogs; fall back to a sensible name
+    let name = null;
+    try { name = prompt('Name this vigil:', state.seed); } catch (e) { name = null; }
+    name = (name === null ? state.seed + ' at turn ' + state.turn : name).trim();
     if (!name) return;
     const ok = EV.save.store('evensong.slot.' + name.replace(/[^\w\- ]+/g, ''), EV.save.serialize(state));
     toast(ok ? 'Kept as “' + name + '”.' : 'The browser would not keep it; export as text instead.');

@@ -2,6 +2,7 @@
    only where people still live. No images anywhere. */
 
 :root {
+  color-scheme: dark; /* Evensong commits to one look: the dark is the subject */
   --ink: #0c0e12;
   --void: #050608;
   --paper: #c9c4b4;        /* warm grey text */
