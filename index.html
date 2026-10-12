@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Evensong</title>
+<meta name="description" content="A turn-based survival strategy game at the end of starlight. Keep one civilization alive from the last red dwarfs to the end of the universe.">
+<link rel="stylesheet" href="css/evensong.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23050608'/%3E%3Ccircle cx='8' cy='8' r='3' fill='none' stroke='%23d8a860' stroke-width='1'/%3E%3Ccircle cx='8' cy='8' r='0.9' fill='%23ffe8c0'/%3E%3C/svg%3E">
+</head>
+<body>
+  <div id="app">
+    <!-- Title -->
+    <section id="title" class="screen" hidden>
+      <div class="title-inner">
+        <h1 class="wordmark">EVENSONG</h1>
+        <p class="subtitle">a vigil at the end of starlight</p>
+        <div class="title-buttons">
+          <button id="t-continue" class="big" hidden>Continue the vigil</button>
+          <button id="t-new" class="big">Begin a new vigil</button>
+          <button id="t-rubric">The Rubric — how to play</button>
+          <button id="t-almanac">The Almanac — the real physics</button>
+          <button id="t-load">Saved games</button>
+        </div>
+        <p class="title-foot">The universe is the antagonist. You will not defeat it.<br>The question is what “alive” will mean when you are done answering it.</p>
+      </div>
+    </section>
+
+    <!-- Setup -->
+    <section id="setup" class="screen" hidden>
+      <div class="setup-inner">
+        <h2>The terms of the vigil</h2>
+        <div class="setup-grid" id="setup-grid"></div>
+        <div class="setup-actions">
+          <button id="s-begin" class="big">Light the first lamp</button>
+          <button id="s-back">Back</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game -->
+    <section id="game" hidden>
+      <header id="topbar">
+        <div id="brand" title="Menu (Esc)">EVENSONG</div>
+        <canvas id="vigilline" aria-label="The Vigil Line: the ages of the universe and what is coming"></canvas>
+        <div id="agebox">
+          <div id="age-era"></div>
+          <div id="age-years"></div>
+        </div>
+      </header>
+      <main id="mid">
+        <div id="soundwrap">
+          <canvas id="sounding" aria-label="The Sounding: your holdings by light-distance"></canvas>
+        </div>
+        <div id="right">
+          <div id="panel" aria-live="polite"></div>
+          <div id="chronicle" aria-label="The Chronicle"></div>
+        </div>
+      </main>
+      <footer id="botbar">
+        <div id="resbox"></div>
+        <div id="meters"></div>
+        <div id="stridebox"></div>
+        <div id="turnbox">
+          <div id="chips"></div>
+          <button id="wheel" class="big" title="Turn the Wheel (Enter)">Turn the Wheel</button>
+        </div>
+      </footer>
+      <div id="guide" hidden></div>
+    </section>
+
+    <!-- Overlay root -->
+    <div id="overlay" hidden>
+      <div id="overlay-card" role="dialog" aria-modal="true"></div>
+    </div>
+  </div>
+
+  <!-- simulation (DOM-free) -->
+  <script src="js/sim/core.js"></script>
+  <script src="js/sim/data.js"></script>
+  <script src="js/sim/world.js"></script>
+  <script src="js/sim/economy.js"></script>
+  <script src="js/sim/events.js"></script>
+  <script src="js/sim/voices.js"></script>
+  <script src="js/sim/gleaner.js"></script>
+  <script src="js/sim/endings.js"></script>
+  <script src="js/sim/actions.js"></script>
+  <script src="js/sim/forecast.js"></script>
+  <script src="js/sim/turn.js"></script>
+  <script src="js/sim/save.js"></script>
+  <!-- interface -->
+  <script src="js/ui/dom.js"></script>
+  <script src="js/ui/audio.js"></script>
+  <script src="js/ui/almanac.js"></script>
+  <script src="js/ui/sounding.js"></script>
+  <script src="js/ui/vigilline.js"></script>
+  <script src="js/ui/panels.js"></script>
+  <script src="js/ui/overlays.js"></script>
+  <script src="js/ui/guide.js"></script>
+  <script src="js/ui/main.js"></script>
+</body>
+</html>

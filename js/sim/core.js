@@ -136,6 +136,16 @@
     const s = fmtNum(Math.abs(v), d);
     return (v < 0 ? '−' : '+') + s;
   }
+  function fmtWhen(nowLog, atLog) {
+    // A future date, phrased usefully: as a countdown while it is near
+    // (same decade of age), as an epoch once it is far.
+    if (atLog <= nowLog) return 'now';
+    if (atLog - nowLog < 0.3) {
+      const left = deeptime.logSub(atLog, nowLog);
+      return 'in ~' + fmtYears(left);
+    }
+    return 'near ' + pow10(atLog, 1) + ' yr';
+  }
 
   // small numeric hygiene: snap float dust to zero, never go negative
   function tidy(v) {
@@ -147,6 +157,6 @@
 
   EV.rng = rng;
   EV.deeptime = deeptime;
-  EV.fmt = { sup, pow10, fmtYears, fmtAge, fmtEta, fmtNum, fmtLy, fmtSigned };
+  EV.fmt = { sup, pow10, fmtYears, fmtAge, fmtEta, fmtNum, fmtLy, fmtSigned, fmtWhen };
   EV.util = { tidy, clamp };
 })(typeof window !== 'undefined' ? (window.EV = window.EV || {}) : (globalThis.EV = globalThis.EV || {}));

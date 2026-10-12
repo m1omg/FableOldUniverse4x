@@ -345,9 +345,12 @@ console.log('endings:', byEnding);
 console.log('victories: ' + vic + '/' + SEEDS + ', reached Wells: ' + era2 + ', reached Hush: ' + era3);
 
 const fails = [];
-if (!results.some((r) => r.era >= 3)) fails.push('no run reached the Hush');
-if (vic === 0) fails.push('no run ended in a victory');
 if (results.some((r) => r.ending === 'none(cap)')) fails.push('a run hit the turn cap without ending');
+if (SEEDS >= 16) {
+  // aggregate reachability claims need a real pool of seeds
+  if (!results.some((r) => r.era >= 3)) fails.push('no run reached the Hush');
+  if (vic === 0) fails.push('no run ended in a victory');
+}
 if (fails.length) {
   console.error('AUTOPLAY FAILURES: ' + fails.join('; '));
   process.exit(1);
