@@ -203,7 +203,12 @@
       cx.beginPath(); cx.moveTo(0, yTop); cx.lineTo(W, yTop); cx.stroke();
       cx.fillStyle = 'rgba(90,87,78,0.9)';
       const bn = D.BANDS[b];
+      const earHere = state.ear && state.ear.indexOf(b) >= 0;
       cx.fillText(bn.name.toUpperCase() + (b > 0 ? '  ·  to ' + EV.fmt.fmtLy(bn.maxLy) : ''), 8, yTop + 12);
+      if (earHere) {
+        cx.fillStyle = 'rgba(127,216,207,0.75)';
+        cx.fillText('◉ the Ear listens here', 8, yTop + 24);
+      }
       // the Gleaner's tide-mark
       if (state.gleaner.awake && !state.gleaner.starved && state.gleaner.band === b && state.era < 3) {
         const gy = yTop + BAND_FRAC[b] * H * 0.5;
@@ -272,8 +277,24 @@
     reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     cv.addEventListener('click', (e) => {
       const r = cv.getBoundingClientRect();
-      const id = siteAt(e.clientX - r.left, e.clientY - r.top);
-      if (id && onSelect) onSelect(id);
+      const px = e.clientX - r.left, py = e.clientY - r.top;
+      const id = siteAt(px, py);
+      if (id && onSelect) { onSelect(id); return; }
+      // empty sky: turn the Ear to this band
+      const st = getState();
+      if (!st) return;
+      const H = cv.clientHeight;
+      let band = D.BANDS.length - 1;
+      for (let b = 0; b < D.BANDS.length; b++) {
+        if (py < bandTop(b + 1 > 5 ? 5 : b + 1, H) || b === 5) { band = b; break; }
+      }
+      const slots = EV.actions.earSlots(st);
+      let ear = st.ear.slice();
+      if (ear.indexOf(band) >= 0) ear = ear.filter((x) => x !== band);
+      else { ear.push(band); while (ear.length > slots) ear.shift(); }
+      EV.actions.setEar(st, ear);
+      EV.ui.toast(ear.indexOf(band) >= 0 ? 'The Ear turns to ' + D.BANDS[band].name + '.' : 'The Ear turns away from ' + D.BANDS[band].name + '.');
+      EV.ui.refresh();
     });
     cv.addEventListener('mousemove', (e) => {
       const r = cv.getBoundingClientRect();

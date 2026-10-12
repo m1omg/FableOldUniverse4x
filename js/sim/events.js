@@ -337,7 +337,16 @@
         }
         dest.built.substrate = Math.max(dest.built.substrate || 0, 4);
         dest.built.hearthhall = Math.max(dest.built.hearthhall || 0, 1);
-        E.log(state, 'The great crossing is made: everyone who is anyone you know now lives at ' + dest.name + '.', 'info');
+        if (E.has(state, 'mill')) dest.built.mill = Math.max(dest.built.mill || 0, 1);
+        dest.built.cistern = Math.max(dest.built.cistern || 0, 1);
+        const shoal = state.sites.find((x) => x.id === 'shoal' && !x.gone);
+        if (shoal && shoal.matter > 0) {
+          dest.matter = EV.util.tidy(dest.matter + shoal.matter);
+          shoal.matter = 0;
+          dest.built.forgeworks = Math.max(dest.built.forgeworks || 0, 1);
+          E.log(state, 'The Shoal rafts against the well with everything the galaxy dropped on its way down; the forges are raised over it.', 'good');
+        }
+        E.log(state, 'The great crossing is made: everyone who is anyone you know now lives at ' + dest.name + (E.has(state, 'mill') ? ', and the Mill is raised over the well with the first landing' : '') + '.', 'info');
       }
     }
     if (choiceId === 'lamp') { state.flags.farLamp = true; state.flame = util.clamp(state.flame + 6, 0, 100); }
@@ -371,7 +380,9 @@
       hold.matter = util.tidy(hold.matter + s.matter);
       s.gone = true;
     }
-    hold.built.vault = vaults > 0 ? 1 : 0;
+    // a vault survives the gathering (archives are copies: one ever built is
+    // never wholly lost), or is cut during it if there is meaning worth it
+    hold.built.vault = (vaults > 0 || state.flags.vaultEverBuilt || state.res.testament >= 25) ? 1 : 0;
     hold.built.cistern = cisterns;
     state.sites.push(hold);
     for (const h of state.hearths) h.siteId = 'hold';

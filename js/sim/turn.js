@@ -6,6 +6,11 @@
   const E = EV.economy;
 
   function earListen(state) {
+    // untended, the Ear wanders to the nearest band with unresolved sites
+    if (!state.ear.length) {
+      const unresolved = state.sites.filter((s) => !s.resolved && !s.gone && !s.hidden).sort((a, b) => a.band - b.band);
+      if (unresolved.length) state.ear = [unresolved[0].band];
+    }
     for (const band of state.ear) {
       let resolvedCount = 0;
       for (const site of state.sites) {

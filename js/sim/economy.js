@@ -187,6 +187,7 @@
           site.built[job.work] = (site.built[job.work] || 0) + 1;
           const w = D.WORKS[job.work];
           if (job.work === 'cistern') R.chargeCap += 25;
+          if (job.work === 'vault') state.flags.vaultEverBuilt = true;
           log(state, w.name + ' stands finished at ' + site.name + '.', 'good');
         }
       }
@@ -236,7 +237,12 @@
       } else if (h.flags.cold) delete h.flags.cold;
     }
 
-    // --- drift: strides longer than a mind can govern itself across
+    // --- drift: strides longer than a mind can govern itself across.
+    // A civilization mostly Stilled has accepted the deep time: the few
+    // still awake carry it better.
+    const mindedAll = state.hearths.filter((h) => !D.SHAPES[h.shape].unminded);
+    const stilledAll = state.hearths.filter((h) => h.shape === 'stilled');
+    const accepted = mindedAll.length > 0 && stilledAll.length >= mindedAll.length * 0.6;
     let drifted = 0;
     for (const h of state.hearths) {
       const hz = horizonOf(state, h);
@@ -253,6 +259,7 @@
       // drift never kills: whole generations simply live and die unguided
       // between decisions, and the Flame pays for what the Wheel outran
       drifted = Math.min(2.5, drifted);
+      if (accepted) drifted *= 0.5;
       state.flame = util.clamp(state.flame - drifted, 0, 100);
       log(state, 'Ages passed between decisions that minds were not shaped to cross: whole histories, unguided, in the dark between turns. (−' + EV.fmt.fmtNum(drifted) + ' Flame — slow, still or reshape them)', 'bad');
     }
@@ -264,6 +271,7 @@
     for (const h of state.hearths) if (h.shape === 'manifold') dFlame += D.SHAPES.manifold.steadies;
     if (doctrine(state, 'feast_of_lights') && !dimmed) dFlame += 1.5;
     if (doctrine(state, 'open_door')) dFlame += 0.3;
+    if (state.riteFocus >= 1 && state.grief < 10) dFlame += 0.4; // kept rites are a warmth of their own
     if (state.hearths.some((h) => h.shape === 'embodied')) dFlame += 0.2; // the old warmth
     state.flame = util.clamp(state.flame + dFlame, 0, 100);
     state.flameZeroTurns = state.flame <= 0 ? state.flameZeroTurns + 1 : 0;
