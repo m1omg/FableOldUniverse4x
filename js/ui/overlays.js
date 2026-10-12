@@ -346,13 +346,16 @@
   function menu(state) {
     const c = open('menu');
     c.appendChild(el('h2', { text: 'The vestry' }));
+    const live = state && state.sites && state.sites.length;
     const btns = el('div', { class: 'choice-list' });
-    btns.appendChild(el('button', { text: 'Save this vigil', onclick: () => { EV.ui.saveSlot(); } }));
-    btns.appendChild(el('button', { text: 'Export as text (keep it anywhere)', onclick: () => exportSave(state) }));
+    if (live) {
+      btns.appendChild(el('button', { text: 'Save this vigil', onclick: () => { EV.ui.saveSlot(); } }));
+      btns.appendChild(el('button', { text: 'Export as text (keep it anywhere)', onclick: () => exportSave(state) }));
+    }
     btns.appendChild(el('button', { text: 'Import a save', onclick: () => importSave() }));
     btns.appendChild(el('button', { text: (EV.audio.muted ? 'Unmute' : 'Mute') + ' the music (M)', onclick: () => { EV.audio.toggleMute(); reopen(); } }));
     btns.appendChild(el('button', { text: 'The Rubric', onclick: () => { rubric(); } }));
-    btns.appendChild(el('button', { text: 'Abandon this vigil (back to title)', onclick: () => { close(); EV.ui.toTitle(); } }));
+    if (live) btns.appendChild(el('button', { text: 'Abandon this vigil (back to title)', onclick: () => { close(); EV.ui.toTitle(); } }));
     c.appendChild(btns);
     const slots = EV.save.listSlots();
     if (slots.length) {

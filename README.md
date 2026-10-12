@@ -59,7 +59,11 @@ it can be driven headlessly:
 ```sh
 node test/autoplay.mjs            # play many full games, assert invariants
 node test/autoplay.mjs --seeds 60 # more seeds
-node test/smoke.mjs               # Playwright browser smoke test (needs Chromium)
+node test/autoplay.mjs --trace 7  # one seed's full chronicle to stdout
+
+npm i --no-save --no-package-lock playwright-core   # once, for the smoke test
+node test/smoke.mjs               # boots the real page in Chromium, plays turns,
+                                  # opens every overlay, checks file:// too
 ```
 
 `docs/DESIGN.md` is the design. The interface (`js/ui/`) draws the Sounding on canvas with

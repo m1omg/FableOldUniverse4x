@@ -102,6 +102,20 @@ try {
   });
   if (turn > 0 && !saved) errors.push('save to localStorage failed');
 
+  // the double-click path: the page must boot from file:// too
+  const filePage = await browser.newPage({ viewport: { width: 900, height: 700 } });
+  filePage.on('pageerror', (e) => errors.push('file:// pageerror: ' + e.message));
+  await filePage.goto('file://' + path.join(root, 'index.html'), { waitUntil: 'load' });
+  await filePage.waitForSelector('#title:not([hidden])');
+  await filePage.click('#t-new');
+  await filePage.click('#s-begin');
+  await filePage.waitForSelector('#game:not([hidden])');
+  await filePage.click('#wheel');
+  await filePage.waitForTimeout(60);
+  const fileTurn = await filePage.evaluate(() => window.EV.ui.state.turn);
+  if (fileTurn !== 1) errors.push('file:// boot did not play a turn');
+  await filePage.close();
+
   const filtered = errors.filter((e) => !/favicon/i.test(e));
   if (filtered.length) {
     console.error('SMOKE FAILURES:\n' + filtered.join('\n'));
